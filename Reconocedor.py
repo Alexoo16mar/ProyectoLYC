@@ -1,6 +1,7 @@
 import Clasificador
-from Token import Token
-class reconocedor():
+import AutomataPila
+import AutomataFDNum
+class scanner():
     def __init__(self):
         self.pila_estructuras=[]
         self.lista_tokens=[]
@@ -10,44 +11,47 @@ class reconocedor():
     def getListaTokens(self):
         return self.lista_tokens
     
-    def ReconocerF1(self, string):
+    def separador_tokens(self, string):
         lineas = string.splitlines() #separar el script en lineas
         for linea in lineas:
             linea = linea.strip()
             palabra=''
-            for caracter in linea:
+            palabra_esp=''
+            i=0
+            while i < len(linea):
+                caracter = linea[i]
                 if caracter == ' ':
                     if palabra != '':
-                        token=Clasificador.tokenizer(palabra)
+                        token = Clasificador.tokenizer(palabra)
                         self.lista_tokens.append(token)
-                    token=Clasificador.tokenizer(palabra)
-                    self.lista_tokens.append(token)
-                    palabra=''
-                elif Clasificador.esCaracterEsp(caracter):
+                    palabra = ''
+                elif Clasificador.es_caracter_esp(caracter):
                     if palabra != '':
-                        token=Clasificador.tokenizer(palabra)
+                        token = Clasificador.tokenizer(palabra)
                         self.lista_tokens.append(token)
-                    token = Clasificador.tokenizerCaracter(caracter)
+                    while i < len(linea) and Clasificador.es_caracter_esp(linea[i]):
+                        palabra_esp += linea[i]
+                        i+=1
+                    token = Clasificador.tokenizer_caracter_esp(palabra_esp)
+                    palabra_esp = ''
                     self.lista_tokens.append(token)
-                    palabra=''
+                    palabra = ''
                 else:
-                    palabra+=caracter
+                    palabra += caracter
+                i+=1
         return self.lista_tokens
     
     def Reconocer(self, string):
-        self.lista_tokens=self.ReconocerF1(string)
-        
-
-cadena="""int entero=45;
-	float flotante = 17.458;
-	double mayor = 18.79847;
-	char letra = 'a';
-"""
-mi_reconocedor=reconocedor()
-mi_reconocedor.ReconocerF1(cadena)
-Lista=mi_reconocedor.getListaTokens()
-for token in Lista:
-    print(token.dato,token.tipo+"\n")
-
-# expresion regular para caracter especial:
-# [!@#$%^&*_()+{}|:"<>?~`-=[]\;',./]
+        self.lista_tokens=self.separador_tokens(string)
+        lista=self.lista_tokens
+        i=0
+        n = len(lista)
+        print ("Lista de tokens:")
+        for i in range(n):
+            print(i,lista[i].get_dato(),"-->", lista[i].get_tipo())
+        i=0
+        while i<n:
+            i=AutomataFDNum.AutomataFDDeclaraciones(lista, i)
+            i=AutomataPila.AutomataPila(lista, i)
+            i+=1
+        print("Fin de la ejecucion")
