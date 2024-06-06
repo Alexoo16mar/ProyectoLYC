@@ -10,19 +10,21 @@ palabras_reservadas={
     "<Acceso>":["public","private","protected"],
     "<Flujo_entrada/salida>":["cout","cin"],
     "<Manipulador_flujo>":["endl"],
+    "<Operador_Logicos>": ['and', 'or', 'not'],
     "<Manejo_excepcion>":["try","catch","throw","throws"],
     "<Espacio_nombres>":["namespace","using"],
     "<Libreria>":["#include<iostream>"],
+    "<Operador_membresia>": ['in', 'not in'],
+    "<Operador_identidad>": ['is', 'is not'],
 }
 caracteres_especiales = {
-    "<Operador_Aritmético>": ['+', '-', '', '/', '%', '*'],
-    "<Operador_asignación>": ['='], #, '+=', '-=', '=', '/=', '%=', '*=', '//='], just in case :)
-    "<Operador_Comparación>": ['==', '!=', '<', '>', '<=', '>='],
-    "<Operador_Lógicos>": ['and', 'or', 'not'],
-    "<Caracter_Agrupación>": ['(', ')', '[', ']', '{', '}'],
-    "<Caracter_Puntuación>": [',', '.', ':', ';'],
-    "<Operador_membresía>": ['in', 'not in'],
-    "<Operador_identidad>": ['is', 'is not'],
+    "<Operador_Aritmetico>": ['+', '-', '/', '%', '*'],
+    "<Operador_asignacion>": ['=', '+=', '-=', '=', '/=', '%=', '*=', '//='],
+    "<Operador_Comparacion>": ['<', '>', '<=', '>=','==', '!='],
+    "<Operador_Bitwise>": ['&', '|', '^', '~', '<<', '>>'],
+    "<Operador_Incremento>": ['++', '--'],
+    "<Caracter_Agrupacion>": ['(', ')', '[', ']', '{', '}'],
+    "<Caracter_Puntuacion>": [',', '.', ':', ';'],
     "<Caracteres_escape>": ['\\', '\'', '\"', '\n', '\t'],
 }
 
@@ -39,19 +41,18 @@ def tokenizer(dato):
         tipo = "ID"
     elif(regex_num.match(dato)):
         tipo = "Numerico"
-
     nuevoToken = Token(dato, tipo)
     return nuevoToken
 
-def esCaracterEsp(dato):
+def es_caracter_esp(dato):
     encontrado=False
-    for categoria, valor in caracteres_especiales.items():
+    for categoria,valor in caracteres_especiales.items():
         if dato in valor:
             encontrado = True
             break
     return encontrado
 
-def tokenizerCaracter(dato):
+def tokenizer_caracter_esp(dato):
     tipo="No encontrado"
     for categoria,valor in caracteres_especiales.items():
         if dato in valor:
@@ -59,6 +60,3 @@ def tokenizerCaracter(dato):
             break
     nuevoToken = Token(dato, tipo)
     return nuevoToken
-
-# mi_token = tokenizer("else")
-# print(mi_token.dato,mi_token.tipo)
