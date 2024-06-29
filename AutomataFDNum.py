@@ -7,17 +7,10 @@ class MiExcepcion(Exception):
 
 def AutomataFDDeclaraciones(lista_tokens, indice):
     try:
-        if (lista_tokens[indice].get_dato() == "int"):
+        if (lista_tokens[indice].get_dato() == "entero"):
             indice = AFDDeclaracionInt(lista_tokens, indice)
-        elif lista_tokens[indice].get_dato() == "double":
+        elif lista_tokens[indice].get_dato() == "real":
             pass
-            #indice = AFDDeclaracionDouble(lista_tokens, indice)
-        elif lista_tokens[indice].get_dato() == "float":
-            pass
-            #indice = AFDDeclaracionFloat(lista_tokens, indice)
-        elif lista_tokens[indice].get_dato() == "bit":
-            pass
-            #indice = AFDDeclaracionBit(lista_tokens, indice)
     except MiExcepcion as error:
         print(error.mensaje)
         print("Error! de aqui en adelante el codigo no se ejecutara correctamente")
