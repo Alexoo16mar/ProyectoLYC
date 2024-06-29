@@ -2,30 +2,20 @@ from Token import Token
 import re
 
 palabras_reservadas={
-    "<tipo>":["int","string","float","bool","double","char"],
-    "<Condicional>":["if"],
-    "<Cierre_Condicional>":["else"],
-    "<Bucle>":["for","while","do"],
-    "<Control_Flujo>":["case","switch","break","continue","return"],
-    "<Acceso>":["public","private","protected"],
-    "<Flujo_entrada/salida>":["cout","cin"],
-    "<Manipulador_flujo>":["endl"],
-    "<Operador_Logicos>": ['and', 'or', 'not'],
-    "<Manejo_excepcion>":["try","catch","throw","throws"],
-    "<Espacio_nombres>":["namespace","using"],
-    "<Libreria>":["#include<iostream>"],
-    "<Operador_membresia>": ['in', 'not in'],
-    "<Operador_identidad>": ['is', 'is not'],
+    "<tipo>":["entero","real"],#,"float","bool","double","char"],
+    "<Condicional>":["si"],
+    "<Cierre_Condicional>":["sino", "finSi"],
+    "<Bucle>":["para","mientras"],
+    "<Cierre_Bucle>":["finPara","finMientras"],
+    "<Operador_Logico>":["y","o","no"],
 }
 caracteres_especiales = {
     "<Operador_Aritmetico>": ['+', '-', '/', '%', '*'],
     "<Operador_asignacion>": ['=', '+=', '-=', '=', '/=', '%=', '*=', '//='],
     "<Operador_Comparacion>": ['<', '>', '<=', '>=','==', '!='],
-    "<Operador_Bitwise>": ['&', '|', '^', '~', '<<', '>>'],
     "<Operador_Incremento>": ['++', '--'],
-    "<Caracter_Agrupacion>": ['(', ')', '[', ']', '{', '}'],
-    "<Caracter_Puntuacion>": [',', '.', ':', ';'],
-    "<Caracteres_escape>": ['\\', '\'', '\"', '\n', '\t'],
+    "<Caracter_Puntuacion>": [','],
+    "<Caracter_Agrupacion>": ['(', ')', '[', ']', '{', '}']
 }
 
 def tokenizer(dato):

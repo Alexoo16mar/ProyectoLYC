@@ -1,15 +1,15 @@
 import Reconocedor as rec
 
-cadena="""int entero = 45 ;
-	float flotante = 17.458 ;
-	double mayor = 18.79847 ;
-	char letra = 'a' ;
-    if ( condicion ) {
-        cout << " mayor es: " << mayor << endl ;
-    } else {
-        cout << " mayor es: " << flotante << endl ;
-    }
+cadena="""entero a = 45,c = 17
+	real b =(17.458+2-4),d=8.5
+    si a > b
+        a = 10
+    finSi
 """
 
 scanner = rec.scanner()
-scanner.Reconocer(cadena)
+scanner.separador_tokens(cadena)
+for token in scanner.getListaTokens():
+    print(token.get_dato(), token.get_tipo())
+
+
