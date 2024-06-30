@@ -1,117 +1,155 @@
+import ADFComparaciones as comparaciones
+from Clasificador import palabras_reservadas
+from scan import scan
+from MiExcepcion import MiExcepcion
 
-class MiExcepcion(Exception):
-    def __init__(self, mensaje):
-        self.mensaje = mensaje
-
-def AutomataPila(lista_tokens, i):
+def AutomataPilaEstructuras(lista_tokens, i):
     try:
         indice = i
-        if (lista_tokens[i].get_dato() == "if"):
-            indice = AutomataPilaIF(lista_tokens, i)
-        elif lista_tokens[i].get_dato() == "while":
-            indice = AutomataPilaWHILE(lista_tokens, i)
-        elif lista_tokens[i].get_dato() == "for":
-            indice = AutomataPilaFOR(lista_tokens, i)
-        elif lista_tokens[i].get_dato() == "do":
-            indice = AutomataPilaDOWHILE(lista_tokens, i)
-        elif lista_tokens[i].get_dato() == "switch":
-            indice = AutomataPilaSWITCHCASE(lista_tokens, i)
+        if (lista_tokens[i].get_dato() == "si"):
+            indice = AutomataPilaSI(lista_tokens, i)
+        elif lista_tokens[i].get_dato() == "mientras":
+            indice = AutomataPilaMientras(lista_tokens, i)
+        elif lista_tokens[i].get_dato() == "para":
+            indice = AutomataFDPara(lista_tokens, i)
     except MiExcepcion as error:
         print(error.mensaje)
     return indice
 
-def AutomataPilaIF(lista_tokens, i):
+def AutomataPilaSI(lista_tokens, i):
     indice = i
     pila_1 = []  # para if else
-    pila_2 = []  # para { }
     estado_actual = "q0"
     while (estado_actual != "qf"):
         if (estado_actual == "q0"):
-            if lista_tokens[indice].get_dato() == "if":
-                pila_1.append("if")
+            if lista_tokens[indice].get_dato() == "si":
+                pila_1.append("si")
                 estado_actual = "q1"
                 indice = indice + 1
             else:
-                raise MiExcepcion("Error en estructura IF!")
+                raise MiExcepcion("Error en estructura SI!")
         if (estado_actual == "q1"):
-            if lista_tokens[indice].get_dato() == "(":
-                # pila no hace nada
-                estado_actual = "q2"
-                indice = indice + 1
-            else:
-                raise MiExcepcion("Error en estructura IF!")
+            indice = comparaciones.AFDComparaciones(lista_tokens,indice) # try catch incorporado
+            estado_actual = "q2"
         if (estado_actual == "q2"):
-            if lista_tokens[indice].get_dato() == "condicion":
-                indice = indice + 1
-                estado_actual = "q3"
-            else:
-                raise MiExcepcion("Error en estructura IF!")
-        if (estado_actual == "q3"):
-            if lista_tokens[indice].get_dato() == ")":
-                # pila no hace nada
-                estado_actual = "q4"
-                indice = indice + 1
-            else:
-                raise MiExcepcion("Error en estructura IF!")
-        if (estado_actual == "q4"):
-            if lista_tokens[indice].get_dato() == "{":
-                pila_2.append(lista_tokens[i].get_dato())
-                estado_actual = "q5"
-                indice = indice + 1
-            else:
-                raise MiExcepcion("Error en estructura IF!")
-        if (estado_actual == "q5"):
-            while (lista_tokens[indice].get_dato() != "}"):
-                indice = indice + 1
-                estado_actual = "q5"
-        if (estado_actual == "q5"):
-            if (lista_tokens[indice].get_dato() == "}"):
-                pila_2.pop()
-                indice = indice + 1
-                estado_actual = "q6"
-            else:
-                raise MiExcepcion("Error en estructura IF!")
-        if (estado_actual == "q6"):
-            if (lista_tokens[indice].get_dato() == "else" and len(pila_1) == 0):
+            indice=scan(lista_tokens,indice)
+            if (lista_tokens[indice].get_dato() == "sino" and len(pila_1) != 0):
                 pila_1.pop()
                 indice = indice + 1
-                estado_actual = "q7"
-            else:
-                estado_final = "qf"
+                estado_actual = "q3"
+            elif (lista_tokens[indice].get_dato() == "finSi" and len(pila_1) != 0):
+                estado_actual = "qf"
                 print("Estructura IF correcta!")
                 return indice + 1
-        if (estado_actual == "q7"):
-            if (lista_tokens[indice].get_dato() == "{"):
-                pila_2.append("{")
-                indice = indice + 1
-                estado_actual = "q5"
-            elif (lista_tokens[indice].get_dato() == "if"):
-                pila_1.append("if")
+        if (estado_actual == "q3"):
+            if (lista_tokens[indice].get_dato() == "si"):
+                pila_1.append("si")
                 indice = indice + 1
                 estado_actual = "q1"
             else:
                 raise MiExcepcion("Error en estructura IF! ")
 
+def AutomataPilaMientras(lista_tokens, i):
+    indice = i
+    pila_1 = []  # para mientras
+    estado_actual = "q0"
+    
+    while (estado_actual != "qf"):
+        if (estado_actual == "q0"):
+            if lista_tokens[indice].get_dato() == "mientras":
+                pila_1.append("mientras")
+                estado_actual = "q1"
+                indice += 1
+            else:
+                raise MiExcepcion("Error en estructura \"mientras\"!")
+        if (estado_actual == "q1"):
+            indice = comparaciones.AFDComparaciones(lista_tokens,indice) # try catch incorporado
+            estado_actual = "q2"
+        if (estado_actual == "q2"):
+            indice=scan(lista_tokens,indice)
+            estado_actual = "q3"
+        if (estado_actual == "q3"):
+            if (lista_tokens[indice].get_dato() == "finMientras"):
+                pila_1.pop()
+                indice += 1
+                estado_actual = "qf"
+                return indice
+            else:
+                raise MiExcepcion("Error en estructura MIENTRAS!")
 
-def AutomataPilaFOR(token):
-    pass
+def AutomataFDPara(lista_tokens, i):
+    indice = i
+    estado_actual = "q0"
+    palabras_reservadas_tipo = set(palabras_reservadas["<tipo>"]) 
+    while (estado_actual != "qf"):
+        if (estado_actual == "q0"):
+                if lista_tokens[indice].get_dato()=="para":
+                    estado_actual = "q1"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q1"):
+                if lista_tokens[indice].get_dato() in palabras_reservadas_tipo:
+                    estado_actual = "q2"
+                    indice = indice + 1
+                elif lista_tokens[indice].get_tipo()=="ID":
+                    estado_actual = "q3"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q2"):
+                if lista_tokens[indice].get_tipo()=="ID":
+                    estado_actual = "q3"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q3"):
+                if lista_tokens[indice].get_dato()=="desde":
+                    estado_actual = "q4"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q4"):
+                if lista_tokens[indice].get_tipo()=="Numerico" or lista_tokens[indice].get_tipo()=="ID":
+                    estado_actual = "q5"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q5"):
+                if lista_tokens[indice].get_dato()=="hasta":
+                    estado_actual = "q6"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q6"):
+                if lista_tokens[indice].get_dato() in palabras_reservadas_tipo or lista_tokens[indice].get_tipo()=="ID":
+                    estado_actual = "q7"
+                    indice = indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
+        if (estado_actual == "q7"):
+                indice=scan(lista_tokens,indice)
+                if lista_tokens[indice].get_dato()=="finPara":
+                    indice=indice+1
+                    estado_actual = "qf"
+                    return indice + 1
+                else:
+                    raise MiExcepcion("Error! Estructura para incorrecta")
 
 
-def AutomataPilaWHILE(token):
-    pass
 
+# string = """
+#             si a > 5 o b < 10 o c == 5
+#                 salah maleko
+#                 malekon salah
+#             finSi
+#         """
 
-def AutomataPilaDOWHILE(token):
-    pass
-
-
-def AutomataPilaSWITCH(token):
-    pass
-
-
-def AutomataPilaSWITCHCASE(token):
-    pass
-
-
-def condicion():
-    pass
+# variable_random = scanner()
+# variable_random.separador_tokens(string)
+# # # for token in variable_random.lista_tokens:
+# # #     print(token.get_dato() + " " + token.get_tipo())
+# try:
+#     print(AutomataPilaSI(variable_random.lista_tokens, 0))
+# except MiExcepcion as e:
+#     print("Coito")

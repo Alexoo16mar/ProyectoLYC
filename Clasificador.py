@@ -1,5 +1,6 @@
 from Token import Token
 import re
+import MiExcepcion
 
 palabras_reservadas={
     "<tipo>":["entero","real"],#,"float","bool","double","char"],
@@ -7,12 +8,14 @@ palabras_reservadas={
     "<Cierre_Condicional>":["sino", "finSi"],
     "<Bucle>":["para","mientras"],
     "<Cierre_Bucle>":["finPara","finMientras"],
+    "<Cierre_Funcion>":["finFun","retornar"],
     "<Operador_Logico>":["y","o","no"],
 }
 caracteres_especiales = {
     "<Operador_Aritmetico>": ['+', '-', '/', '%', '*'],
     "<Operador_asignacion>": ['=', '+=', '-=', '=', '/=', '%=', '*=', '//='],
     "<Operador_Comparacion>": ['<', '>', '<=', '>=','==', '!='],
+    "<Operador_Extra>": ['&&', '||', '!'],
     "<Operador_Incremento>": ['++', '--'],
     "<Caracter_Puntuacion>": [','],
     "<Caracter_Agrupacion>": ['(', ')', '[', ']', '{', '}']
@@ -48,5 +51,7 @@ def tokenizer_caracter_esp(dato):
         if dato in valor:
             tipo = categoria
             break
+    if tipo == "No encontrado":
+        raise MiExcepcion("Palabra desconocida!")
     nuevoToken = Token(dato, tipo)
     return nuevoToken
