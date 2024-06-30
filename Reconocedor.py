@@ -1,6 +1,6 @@
 import Clasificador as clas
-import AutomataPila
-import AutomataFDNum
+from AutomataFDNum import scan
+from MiExcepcion import MiExcepcion
 class scanner():
     def __init__(self):
         self.pila_estructuras=[]
@@ -59,11 +59,10 @@ class scanner():
         i=0
         n = len(lista)
         print ("Lista de tokens:")
-        for i in range(n):
-            print(i,lista[i].get_dato(),"-->", lista[i].get_tipo())
-        i=0
-        while i<n:
-            i=AutomataFDNum.AutomataFDDeclaraciones(lista, i)
-            i=AutomataPila.AutomataPila(lista, i)
-            i+=1
+        try:
+            while i < n:
+                i = scan(lista,i)
+        except (MiExcepcion) as e:
+            print(e.mensaje)
         print("Fin de la ejecucion")
+
