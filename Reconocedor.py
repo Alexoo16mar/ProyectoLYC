@@ -1,5 +1,5 @@
 import Clasificador as clas
-from AutomataFDNum import scan
+from Automatas import scan
 from MiExcepcion import MiExcepcion
 class scanner():
     def __init__(self):
