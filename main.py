@@ -16,23 +16,12 @@ cadena="""
                     finSi
                 finSi
             finSi
-            a=a+1
-            si w>2
-                w=w+1
-            sino
-                para i desde 0 hasta c
-                    c=c-1
-                finPara
-                w=w-1
-            finSi
+            a=a+
         finSi
         retornar c
     finFun
 """
 
 scanner = rec.scanner()
-# scanner.separador_tokens(cadena)
-# for token in scanner.getListaTokens():
-#     print(token.get_dato()+" -> "+ token.get_tipo())
 scanner.Reconocer(cadena)
 

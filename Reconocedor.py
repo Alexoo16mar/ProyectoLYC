@@ -64,5 +64,6 @@ class scanner():
                 i = scan(lista,i)
         except (MiExcepcion) as e:
             print(e.mensaje)
-        print("Fin de la ejecucion")
+        except Exception as e:
+            print("Fin de la ejecucion")
 

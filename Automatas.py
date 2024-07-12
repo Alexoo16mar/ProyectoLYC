@@ -120,7 +120,7 @@ def AutomataPilaFunciones(lista_tokens, i):
     pila_2  = LifoQueue() # para : y end
     estado_actual = "q0"
     palabras_reservadas_tipo = set(palabras_reservadas["<tipo>"])
-    while (estado_actual != "qf"):
+    while (estado_actual != "qf" and indice < len(lista_tokens)):
         if (estado_actual == "q0"):
                 if lista_tokens[indice].get_dato() in palabras_reservadas_tipo:
                     pila_1.put(lista_tokens[indice].get_dato())
@@ -131,19 +131,19 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q1"):
+        elif (estado_actual == "q1"):
                 if lista_tokens[indice].get_tipo()=="ID":
                     estado_actual = "q2"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q2"):
+        elif (estado_actual == "q2"):
                 if lista_tokens[indice].get_dato()=="(":
                     estado_actual = "q3"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q3"):
+        elif (estado_actual == "q3"):
                 if lista_tokens[indice].get_dato()==")":
                     estado_actual = "q8"
                     indice = indice + 1
@@ -152,13 +152,13 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q4"):
+        elif (estado_actual == "q4"):
                 if lista_tokens[indice].get_tipo()=="ID":
                     estado_actual = "q5"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q5"):
+        elif (estado_actual == "q5"):
                 if lista_tokens[indice].get_dato()==")":
                     estado_actual = "q8"
                     indice = indice + 1
@@ -170,7 +170,7 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q6"):
+        elif (estado_actual == "q6"):
                 if lista_tokens[indice].get_tipo()=="ID" or lista_tokens[indice].get_tipo()=="Numerico":
                     estado_actual = "q7"
                     indice = indice + 1
@@ -179,7 +179,7 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q7"):
+        elif (estado_actual == "q7"):
                 if lista_tokens[indice].get_dato()==")":
                     estado_actual = "q8"
                     indice = indice + 1
@@ -188,23 +188,23 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "qm"):
+        elif (estado_actual == "qm"):
                 if lista_tokens[indice].get_dato() in palabras_reservadas_tipo:
                     estado_actual = "q4"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
                         
-        if (estado_actual == "q8"):
+        elif (estado_actual == "q8"):
                 if lista_tokens[indice].get_dato()==":":
                     pila_2.put(":")
                     estado_actual = "q9"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q9"):
+        elif (estado_actual == "q9"):
                 indice=scan(lista_tokens,indice)
-                print(indice)
+                #print(indice)
                 if lista_tokens[indice].get_dato()=="finFun" and pila_1.empty():
                     pila_2.get()
                     if pila_2.empty():
@@ -219,19 +219,20 @@ def AutomataPilaFunciones(lista_tokens, i):
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q10"):
+        elif (estado_actual == "q10"):
                 if lista_tokens[indice].get_tipo()=="ID" or lista_tokens[indice].get_tipo()=="Numerico" :
                     estado_actual = "q11"
                     indice = indice + 1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
-        if (estado_actual == "q11"):
+        elif (estado_actual == "q11"):
                 if lista_tokens[indice].get_dato()=="finFun" and pila_1.empty():
                     estado_actual="qf"
                     print("Funcion correcta!")
                     return indice+1
                 else:
                     raise MiExcepcion("Error! Funcion mal declarada ")
+    raise MiExcepcion("Error! Funcion mal declarada ")
 
 def AutomataPilaEstructuras(lista_tokens, i):
     indice = i
